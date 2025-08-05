@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import { Express } from "express";
 import cors from "cors";
@@ -15,7 +18,7 @@ export default class ExpressServer {
   private setupMiddleware() {
     this.app.use(
       cors({
-        origin: "http://localhost:8080",
+        origin: process.env.PORT,
         methods: ["PUT", "PATCH", "GET", "POST"],
         allowedHeaders: ["Content-Type", "Authorization"],
         credentials: true,

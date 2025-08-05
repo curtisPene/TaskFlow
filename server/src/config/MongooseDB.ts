@@ -12,11 +12,9 @@ export default class MongooseDB {
     }
 
     try {
-      const connectionString =
-        process.env.MONGODB_URI ||
-        "mongodb+srv://curtispene:50phKOgk2A7fPzgn@devcluster.8q9ib.mongodb.net/?retryWrites=true&w=majority&appName=DevCluster";
+      const connectionString = process.env.MONGODB_URI;
 
-      this.connection = await mongoose.connect(connectionString, {
+      this.connection = await mongoose.connect(connectionString!, {
         dbName: "TaskFlow",
       });
 
