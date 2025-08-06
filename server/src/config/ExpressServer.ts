@@ -18,7 +18,7 @@ export default class ExpressServer {
   private setupMiddleware() {
     this.app.use(
       cors({
-        origin: process.env.PORT,
+        origin: process.env.CORS_ORIGIN,
         methods: ["PUT", "PATCH", "GET", "POST"],
         allowedHeaders: ["Content-Type", "Authorization"],
         credentials: true,
