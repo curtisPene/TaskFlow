@@ -2,13 +2,16 @@ import { describe, test, expect, beforeAll, afterAll } from "@jest/globals";
 import request from "supertest";
 import ExpressServer from "../src/config/ExpressServer";
 import { Express } from "express";
+import { UserContainer } from "../src/domains/user/UserContainer";
 
 describe("Server Tests", () => {
   let expressServer: ExpressServer;
+  let userContainer: UserContainer;
   let app: Express;
 
   beforeAll(() => {
-    expressServer = new ExpressServer();
+    userContainer = new UserContainer();
+    expressServer = new ExpressServer(userContainer);
     app = expressServer.getApp();
   });
 

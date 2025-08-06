@@ -1,4 +1,4 @@
-import { IDGenerator } from "../domain/IdGenerator";
+import { IDGenerator } from "../domain/IDGenerator";
 
 export class CryptoIDGenerator implements IDGenerator {
   generate() {

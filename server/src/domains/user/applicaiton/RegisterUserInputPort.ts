@@ -1,17 +1,20 @@
+import { IDGenerator } from "../../../lib/domain/IDGenerator";
 import { Result } from "../../../lib/types/Result";
-import { CryptoIDGenerator } from "../../../lib/utils/CryptoIDGenerator";
 import { Email } from "../domain/Email";
 import { User } from "../domain/User";
 import { RegisterUser, RegisterUserDTO, UserDTO } from "./RegisterUser";
 import { UserRepository } from "./UserRepository";
 
 export class RegisterUserInputPort implements RegisterUser {
-  constructor(private userRepo: UserRepository) {}
+  constructor(
+    private userRepo: UserRepository,
+    private idGenerator: IDGenerator
+  ) {}
 
   async execute(
     command: RegisterUserDTO
   ): Promise<Result<UserDTO, string> | Result<UserDTO, never>> {
-    const id = new CryptoIDGenerator().generate();
+    const id = this.idGenerator.generate();
 
     const { email, password, username, displayName } = command;
 
@@ -23,7 +26,7 @@ export class RegisterUserInputPort implements RegisterUser {
 
     const emailVO = Email.create(email);
 
-    const newUser = new User(id, emailVO, username, displayName);
+    const newUser = new User(id, emailVO, password, username, displayName);
 
     const result = await this.userRepo.createUser(newUser);
 

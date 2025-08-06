@@ -5,11 +5,12 @@ import express from "express";
 import { Express } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
+import { UserContainer } from "../domains/user/UserContainer";
 
 export default class ExpressServer {
   private app: Express;
 
-  constructor() {
+  constructor(private userContainer: UserContainer) {
     this.app = express();
     this.setupMiddleware();
     this.setupRoutes();
@@ -29,8 +30,10 @@ export default class ExpressServer {
   }
 
   private setupRoutes() {
-    // Add routes here
     this.app.get("/health-check", (req, res) => res.sendStatus(200));
+
+    // User routes
+    this.app.use("/api/users", this.userContainer.getUserRouter());
   }
 
   public getApp(): Express {
