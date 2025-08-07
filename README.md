@@ -22,6 +22,7 @@ A Trello-like task management application built with modern web technologies and
 - **Dependency Injection Container** for clean dependency management
 - **Zod** for data validation
 - **bcrypt** for password hashing
+- **JWT** (jsonwebtoken) for authentication tokens
 - **dotenv** for environment configuration
 
 ### Frontend (Coming Soon)
@@ -60,11 +61,14 @@ TaskFlow/
 
 ### Environment Setup
 
-1. Create a `.env` file in the server directory with your MongoDB connection:
+1. Create a `.env` file in the server directory with your MongoDB connection and JWT secrets:
    ```env
    MONGODB_URI=mongodb://localhost:27017/TaskFlow
    # or for MongoDB Atlas:
    # MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/TaskFlow
+   
+   JWT_SECRET=your-secret-key-here
+   JWT_REFRESH_SECRET=your-refresh-secret-key-here
    ```
 
 ### Backend Setup
@@ -112,7 +116,8 @@ TaskFlow follows **Hexagonal Architecture** (Davi Vieira approach) with clean se
 - **Use Case Interfaces**: Domain-defined contracts implemented by application services
 
 ### Current Implementation
-- **User Domain**: Complete user registration and authentication
+- **User Domain**: Complete user registration and login with JWT authentication
+- **JWT Authentication**: Access and refresh token support with configurable expiration times
 - **Server Orchestration**: Clean startup/shutdown lifecycle management
 - **Database Connection**: MongoDB with Mongoose, connection pooling, and error handling
 

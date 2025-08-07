@@ -1,4 +1,5 @@
 import { Result } from "../../../lib/types/Result";
+import { UserRepository } from "./UserRepository";
 
 export type RegisterUserDTO = {
   email: string;
@@ -17,6 +18,8 @@ export type UserDTO = {
   accountStatus: string;
   createdAt: string;
   lastLoginAt: string | undefined;
+  accessToken?: string;
+  refreshToken?: string;
 };
 
 export interface RegisterUser {

@@ -11,17 +11,15 @@ export class RegisterUserInputPort implements RegisterUser {
     private idGenerator: IDGenerator
   ) {}
 
-  async execute(
-    command: RegisterUserDTO
-  ): Promise<Result<UserDTO, string> | Result<UserDTO, never>> {
+  async execute(command: RegisterUserDTO) {
     const id = this.idGenerator.generate();
 
     const { email, password, username, displayName } = command;
 
     const usernameExists = await this.userRepo.findUserByEmail(email);
 
-    if (usernameExists.isSuccess()) {
-      return Result.fail("Username already exists");
+    if (usernameExists.success) {
+      return Result.fail("User already exists", 400);
     }
 
     const emailVO = Email.create(email);
@@ -30,7 +28,11 @@ export class RegisterUserInputPort implements RegisterUser {
 
     const result = await this.userRepo.createUser(newUser);
 
-    const createdUser = result.getValue();
+    if (!result.success) {
+      return Result.fail(result.error, 400);
+    }
+
+    const createdUser = result.data;
 
     const userDTO: UserDTO = {
       id: createdUser.id,
@@ -44,6 +46,6 @@ export class RegisterUserInputPort implements RegisterUser {
       lastLoginAt: createdUser.lastLoginAt,
     };
 
-    return Result.ok(userDTO);
+    return Result.success(userDTO, 201);
   }
 }

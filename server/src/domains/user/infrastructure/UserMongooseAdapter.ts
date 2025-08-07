@@ -13,6 +13,7 @@ export class UserMongooseAdapter implements UserRepository {
       const user = new User(
         userDoc.id,
         email,
+        userDoc.password,
         userDoc.username,
         userDoc.displayName,
         userDoc.avatar,
@@ -21,7 +22,7 @@ export class UserMongooseAdapter implements UserRepository {
         userDoc.createdAt.toISOString(),
         userDoc.lastLoginAt?.toISOString() ?? undefined
       );
-      return Result.ok(user);
+      return Result.success<User>(user);
     } else {
       return Result.fail("User not found");
     }
@@ -30,7 +31,9 @@ export class UserMongooseAdapter implements UserRepository {
   async createUser(user: User): Promise<Result<User, string>> {
     const newUserDoc = new UserModel({
       ...user,
+      email: user.email.getValue(),
       createdAt: new Date(),
+      lastLoginAt: new Date(),
     });
 
     await newUserDoc.save();
@@ -38,6 +41,7 @@ export class UserMongooseAdapter implements UserRepository {
     const userResponse = new User(
       newUserDoc.id,
       Email.fromPersistence(newUserDoc.email),
+      newUserDoc.password,
       newUserDoc.username,
       newUserDoc.displayName,
       newUserDoc.avatar,
@@ -47,6 +51,6 @@ export class UserMongooseAdapter implements UserRepository {
       newUserDoc.lastLoginAt?.toISOString() ?? undefined
     );
 
-    return Result.ok(userResponse);
+    return Result.success(userResponse);
   }
 }

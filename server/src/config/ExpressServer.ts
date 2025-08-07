@@ -33,7 +33,7 @@ export default class ExpressServer {
     this.app.get("/health-check", (req, res) => res.sendStatus(200));
 
     // User routes
-    this.app.use("/api/users", this.userContainer.getUserRouter());
+    this.app.use("/api/auth", this.userContainer.getUserRouter());
   }
 
   public getApp(): Express {

@@ -23,16 +23,31 @@ Authorization: Bearer <jwt_token>
 - **Premium Users**: Higher limits apply
 - Rate limit headers included in all responses
 
-## Error Responses
+## Response Format
 
-All errors follow consistent format:
+All API responses follow a standardized format:
+
+### Success Response
 ```json
 {
+  "success": true,
+  "status": 200,
+  "data": { /* response data */ },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
+### Error Response
+```json
+{
+  "success": false,
+  "status": 400,
   "error": {
-    "code": "ERROR_CODE",
     "message": "Human readable error message",
+    "code": "ERROR_CODE",
     "details": {}
-  }
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -61,8 +76,13 @@ POST /api/auth/register
 **Response**: `201 Created`
 ```json
 {
-  "message": "Registration successful. Please verify your email.",
-  "userId": "uuid"
+  "success": true,
+  "status": 201,
+  "data": {
+    "message": "Registration successful. Please verify your email.",
+    "userId": "uuid"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -83,14 +103,19 @@ POST /api/auth/login
 **Response**: `200 OK`
 ```json
 {
-  "accessToken": "jwt_token",
-  "refreshToken": "refresh_token",
-  "user": {
-    "id": "uuid",
-    "email": "user@example.com",
-    "username": "johndoe",
-    "displayName": "John Doe"
-  }
+  "success": true,
+  "status": 200,
+  "data": {
+    "accessToken": "jwt_token",
+    "refreshToken": "refresh_token",
+    "user": {
+      "id": "uuid",
+      "email": "user@example.com",
+      "username": "johndoe",
+      "displayName": "John Doe"
+    }
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -100,6 +125,16 @@ POST /api/auth/logout
 ```
 
 **Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "Logout successful"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
 
 #### Refresh Token
 ```
@@ -110,6 +145,19 @@ POST /api/auth/refresh
 ```json
 {
   "refreshToken": "refresh_token"
+}
+```
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "accessToken": "new_jwt_token",
+    "refreshToken": "new_refresh_token"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -126,6 +174,18 @@ POST /api/auth/forgot-password
 }
 ```
 
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "Password reset email sent"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 #### Reset Password
 ```
 POST /api/auth/reset-password
@@ -136,6 +196,18 @@ POST /api/auth/reset-password
 {
   "token": "reset_token",
   "newPassword": "newSecurePassword123"
+}
+```
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "Password reset successful"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -151,6 +223,18 @@ POST /api/auth/verify-email
 }
 ```
 
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "Email verified successfully"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 ### User Profile Endpoints
 
 #### Get Current User
@@ -161,17 +245,22 @@ GET /api/users/me
 **Response**: `200 OK`
 ```json
 {
-  "id": "uuid",
-  "email": "user@example.com",
-  "username": "johndoe",
-  "displayName": "John Doe",
-  "avatar": "avatar_url",
-  "createdAt": "2024-01-01T00:00:00Z",
-  "preferences": {
-    "theme": "light",
-    "timezone": "UTC",
-    "language": "en"
-  }
+  "success": true,
+  "status": 200,
+  "data": {
+    "id": "uuid",
+    "email": "user@example.com",
+    "username": "johndoe",
+    "displayName": "John Doe",
+    "avatar": "avatar_url",
+    "createdAt": "2024-01-01T00:00:00Z",
+    "preferences": {
+      "theme": "light",
+      "timezone": "UTC",
+      "language": "en"
+    }
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -189,11 +278,45 @@ PUT /api/users/me
 }
 ```
 
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "id": "uuid",
+    "email": "user@example.com",
+    "username": "johndoe",
+    "displayName": "John Smith",
+    "avatar": "new_avatar_url",
+    "createdAt": "2024-01-01T00:00:00Z",
+    "preferences": {
+      "theme": "light",
+      "timezone": "UTC",
+      "language": "en"
+    }
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 #### Deactivate Account
 ```
 DELETE /api/users/me
 ```
 **Business Rule**: BR-U-007 (Account Deactivation)
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "Account deactivated successfully"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
 
 #### Get User Activity
 ```
@@ -205,6 +328,28 @@ GET /api/users/me/activity
 - `limit`: Number of activities (default: 20, max: 100)
 - `offset`: Pagination offset
 
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "activities": [
+      {
+        "id": "uuid",
+        "type": "card_created",
+        "description": "Created card 'Implement authentication'",
+        "boardId": "uuid",
+        "cardId": "uuid",
+        "createdAt": "2024-01-01T00:00:00Z"
+      }
+    ],
+    "totalCount": 25
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 #### Get Login History
 ```
 GET /api/users/me/sessions
@@ -214,15 +359,20 @@ GET /api/users/me/sessions
 **Response**: `200 OK`
 ```json
 {
-  "sessions": [
-    {
-      "id": "session_id",
-      "loginAt": "2024-01-01T00:00:00Z",
-      "ipAddress": "192.168.1.1",
-      "userAgent": "Mozilla/5.0...",
-      "current": true
-    }
-  ]
+  "success": true,
+  "status": 200,
+  "data": {
+    "sessions": [
+      {
+        "id": "session_id",
+        "loginAt": "2024-01-01T00:00:00Z",
+        "ipAddress": "192.168.1.1",
+        "userAgent": "Mozilla/5.0...",
+        "current": true
+      }
+    ]
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -231,6 +381,18 @@ GET /api/users/me/sessions
 DELETE /api/users/me/sessions/:sessionId
 ```
 **Business Rule**: BR-U-023 (Session Management)
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "Session revoked successfully"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
 
 #### Export User Data
 ```
@@ -241,9 +403,14 @@ POST /api/users/me/export
 **Response**: `202 Accepted`
 ```json
 {
-  "exportId": "uuid",
-  "status": "processing",
-  "estimatedCompletion": "2024-01-01T12:00:00Z"
+  "success": true,
+  "status": 202,
+  "data": {
+    "exportId": "uuid",
+    "status": "processing",
+    "estimatedCompletion": "2024-01-01T12:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -258,9 +425,14 @@ POST /api/users/me/2fa/enable
 **Response**: `200 OK`
 ```json
 {
-  "qrCode": "data:image/png;base64,...",
-  "secret": "base32_secret",
-  "recoveryCodes": ["code1", "code2", ...]
+  "success": true,
+  "status": 200,
+  "data": {
+    "qrCode": "data:image/png;base64,...",
+    "secret": "base32_secret",
+    "recoveryCodes": ["code1", "code2", "code3", "code4", "code5"]
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -276,6 +448,18 @@ POST /api/users/me/2fa/disable
 }
 ```
 
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "Two-factor authentication disabled"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 #### Verify 2FA Token
 ```
 POST /api/users/me/2fa/verify
@@ -285,6 +469,18 @@ POST /api/users/me/2fa/verify
 ```json
 {
   "token": "123456"
+}
+```
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "Token verified successfully"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -306,18 +502,23 @@ GET /api/boards
 **Response**: `200 OK`
 ```json
 {
-  "boards": [
-    {
-      "id": "uuid",
-      "name": "My Project Board",
-      "description": "Project management board",
-      "visibility": "private",
-      "createdAt": "2024-01-01T00:00:00Z",
-      "role": "owner",
-      "listsCount": 3,
-      "membersCount": 5
-    }
-  ]
+  "success": true,
+  "status": 200,
+  "data": {
+    "boards": [
+      {
+        "id": "uuid",
+        "name": "My Project Board",
+        "description": "Project management board",
+        "visibility": "private",
+        "createdAt": "2024-01-01T00:00:00Z",
+        "role": "owner",
+        "listsCount": 3,
+        "membersCount": 5
+      }
+    ]
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -340,18 +541,23 @@ POST /api/boards
 **Response**: `201 Created`
 ```json
 {
-  "id": "uuid",
-  "name": "New Project Board",
-  "description": "Description of the board",
-  "visibility": "private",
-  "createdAt": "2024-01-01T00:00:00Z",
-  "lists": [
-    {
-      "id": "uuid",
-      "name": "To Do",
-      "position": 1
-    }
-  ]
+  "success": true,
+  "status": 201,
+  "data": {
+    "id": "uuid",
+    "name": "New Project Board",
+    "description": "Description of the board",
+    "visibility": "private",
+    "createdAt": "2024-01-01T00:00:00Z",
+    "lists": [
+      {
+        "id": "uuid",
+        "name": "To Do",
+        "position": 1
+      }
+    ]
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -363,39 +569,44 @@ GET /api/boards/:boardId
 **Response**: `200 OK`
 ```json
 {
-  "id": "uuid",
-  "name": "My Project Board",
-  "description": "Project management board",
-  "visibility": "private",
-  "background": {
-    "type": "color",
-    "value": "#0079bf"
+  "success": true,
+  "status": 200,
+  "data": {
+    "id": "uuid",
+    "name": "My Project Board",
+    "description": "Project management board",
+    "visibility": "private",
+    "background": {
+      "type": "color",
+      "value": "#0079bf"
+    },
+    "createdAt": "2024-01-01T00:00:00Z",
+    "lists": [
+      {
+        "id": "uuid",
+        "name": "To Do",
+        "position": 1,
+        "cardsCount": 5
+      }
+    ],
+    "members": [
+      {
+        "userId": "uuid",
+        "username": "johndoe",
+        "displayName": "John Doe",
+        "role": "owner",
+        "joinedAt": "2024-01-01T00:00:00Z"
+      }
+    ],
+    "labels": [
+      {
+        "id": "uuid",
+        "name": "Bug",
+        "color": "#eb5a46"
+      }
+    ]
   },
-  "createdAt": "2024-01-01T00:00:00Z",
-  "lists": [
-    {
-      "id": "uuid",
-      "name": "To Do",
-      "position": 1,
-      "cardsCount": 5
-    }
-  ],
-  "members": [
-    {
-      "userId": "uuid",
-      "username": "johndoe",
-      "displayName": "John Doe",
-      "role": "owner",
-      "joinedAt": "2024-01-01T00:00:00Z"
-    }
-  ],
-  "labels": [
-    {
-      "id": "uuid",
-      "name": "Bug",
-      "color": "#eb5a46"
-    }
-  ]
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -417,6 +628,27 @@ PUT /api/boards/:boardId
 }
 ```
 
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "id": "uuid",
+    "name": "Updated Board Name",
+    "description": "Updated description",
+    "visibility": "private",
+    "background": {
+      "type": "color",
+      "value": "#026aa7"
+    },
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-01-01T12:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 #### Delete Board
 ```
 DELETE /api/boards/:boardId
@@ -426,8 +658,13 @@ DELETE /api/boards/:boardId
 **Response**: `200 OK`
 ```json
 {
-  "message": "Board scheduled for deletion",
-  "deletionDate": "2024-02-01T00:00:00Z"
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "Board scheduled for deletion",
+    "deletionDate": "2024-02-01T00:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -437,9 +674,33 @@ POST /api/boards/:boardId/archive
 ```
 **Business Rule**: BR-B-012 (Board Archive)
 
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "Board archived successfully"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 #### Restore Archived Board
 ```
 POST /api/boards/:boardId/restore
+```
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "Board restored successfully"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
 ```
 
 ### Board Membership
@@ -452,16 +713,21 @@ GET /api/boards/:boardId/members
 **Response**: `200 OK`
 ```json
 {
-  "members": [
-    {
-      "userId": "uuid",
-      "username": "johndoe",
-      "displayName": "John Doe",
-      "email": "john@example.com",
-      "role": "owner",
-      "joinedAt": "2024-01-01T00:00:00Z"
-    }
-  ]
+  "success": true,
+  "status": 200,
+  "data": {
+    "members": [
+      {
+        "userId": "uuid",
+        "username": "johndoe",
+        "displayName": "John Doe",
+        "email": "john@example.com",
+        "role": "owner",
+        "joinedAt": "2024-01-01T00:00:00Z"
+      }
+    ]
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -479,6 +745,19 @@ POST /api/boards/:boardId/members
 }
 ```
 
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "Invitation sent successfully",
+    "invitationId": "uuid"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 #### Update Member Role
 ```
 PUT /api/boards/:boardId/members/:userId
@@ -492,17 +771,57 @@ PUT /api/boards/:boardId/members/:userId
 }
 ```
 
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "userId": "uuid",
+    "role": "admin",
+    "updatedAt": "2024-01-01T12:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 #### Remove Board Member
 ```
 DELETE /api/boards/:boardId/members/:userId
 ```
 **Business Rule**: BR-B-009 (Removing Members)
 
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "Member removed from board successfully"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 #### Transfer Board Ownership
 ```
 POST /api/boards/:boardId/members/:userId/transfer-ownership
 ```
 **Business Rule**: BR-B-004 (Board Ownership)
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "Board ownership transferred successfully",
+    "newOwnerId": "uuid",
+    "transferredAt": "2024-01-01T12:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
 
 ### Board Settings
 
@@ -516,6 +835,19 @@ PUT /api/boards/:boardId/visibility
 ```json
 {
   "visibility": "team"
+}
+```
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "visibility": "team",
+    "updatedAt": "2024-01-01T12:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -533,6 +865,22 @@ PUT /api/boards/:boardId/background
 }
 ```
 
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "background": {
+      "type": "image",
+      "value": "image_url"
+    },
+    "updatedAt": "2024-01-01T12:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 #### Get Board Activity
 ```
 GET /api/boards/:boardId/activity
@@ -541,6 +889,33 @@ GET /api/boards/:boardId/activity
 **Query Parameters**:
 - `limit`: Number of activities (default: 20)
 - `since`: ISO date for activities since
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "activities": [
+      {
+        "id": "uuid",
+        "type": "card_moved",
+        "description": "John moved 'Task 1' from To Do to In Progress",
+        "userId": "uuid",
+        "username": "johndoe",
+        "createdAt": "2024-01-01T12:00:00Z",
+        "data": {
+          "cardId": "uuid",
+          "fromListId": "uuid",
+          "toListId": "uuid"
+        }
+      }
+    ],
+    "totalCount": 25
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
 
 ---
 
@@ -559,16 +934,21 @@ GET /api/boards/:boardId/lists
 **Response**: `200 OK`
 ```json
 {
-  "lists": [
-    {
-      "id": "uuid",
-      "name": "To Do",
-      "position": 1,
-      "wipLimit": 0,
-      "cardsCount": 5,
-      "createdAt": "2024-01-01T00:00:00Z"
-    }
-  ]
+  "success": true,
+  "status": 200,
+  "data": {
+    "lists": [
+      {
+        "id": "uuid",
+        "name": "To Do",
+        "position": 1,
+        "wipLimit": 0,
+        "cardsCount": 5,
+        "createdAt": "2024-01-01T00:00:00Z"
+      }
+    ]
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -588,18 +968,41 @@ POST /api/boards/:boardId/lists
 **Response**: `201 Created`
 ```json
 {
-  "id": "uuid",
-  "name": "In Progress",
-  "position": 2,
-  "wipLimit": 0,
-  "cardsCount": 0,
-  "createdAt": "2024-01-01T00:00:00Z"
+  "success": true,
+  "status": 201,
+  "data": {
+    "id": "uuid",
+    "name": "In Progress",
+    "position": 2,
+    "wipLimit": 0,
+    "cardsCount": 0,
+    "createdAt": "2024-01-01T00:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
 #### Get List Details
 ```
 GET /api/lists/:listId
+```
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "id": "uuid",
+    "name": "To Do",
+    "position": 1,
+    "wipLimit": 0,
+    "boardId": "uuid",
+    "cardsCount": 5,
+    "createdAt": "2024-01-01T00:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
 ```
 
 #### Update List
@@ -615,11 +1018,40 @@ PUT /api/lists/:listId
 }
 ```
 
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "id": "uuid",
+    "name": "Updated List Name",
+    "position": 1,
+    "wipLimit": 0,
+    "boardId": "uuid",
+    "updatedAt": "2024-01-01T12:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 #### Delete List
 ```
 DELETE /api/lists/:listId
 ```
 **Business Rules**: BR-L-007 (List Deletion Rules), BR-L-008 (List Deletion Process), BR-L-009 (Minimum Lists)
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "List deleted successfully"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
 
 #### Archive List
 ```
@@ -627,9 +1059,33 @@ POST /api/lists/:listId/archive
 ```
 **Business Rule**: BR-L-011 (List Archive)
 
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "List archived successfully"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 #### Restore Archived List
 ```
 POST /api/lists/:listId/restore
+```
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "List restored successfully"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
 ```
 
 ### List Operations
@@ -647,6 +1103,20 @@ PUT /api/lists/:listId/position
 }
 ```
 
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "id": "uuid",
+    "position": 3,
+    "updatedAt": "2024-01-01T12:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 #### Set WIP Limit
 ```
 PUT /api/lists/:listId/wip-limit
@@ -660,6 +1130,20 @@ PUT /api/lists/:listId/wip-limit
 }
 ```
 
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "id": "uuid",
+    "wipLimit": 5,
+    "updatedAt": "2024-01-01T12:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 #### Get List Statistics
 ```
 GET /api/lists/:listId/stats
@@ -669,10 +1153,15 @@ GET /api/lists/:listId/stats
 **Response**: `200 OK`
 ```json
 {
-  "cardsCount": 10,
-  "completedCardsCount": 3,
-  "totalPoints": 25,
-  "averageCardAge": 5.2
+  "success": true,
+  "status": 200,
+  "data": {
+    "cardsCount": 10,
+    "completedCardsCount": 3,
+    "totalPoints": 25,
+    "averageCardAge": 5.2
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -696,33 +1185,38 @@ GET /api/lists/:listId/cards
 **Response**: `200 OK`
 ```json
 {
-  "cards": [
-    {
-      "id": "uuid",
-      "title": "Implement user authentication",
-      "description": "Add JWT-based authentication",
-      "position": 1,
-      "dueDate": "2024-01-15T00:00:00Z",
-      "assignees": [
-        {
-          "userId": "uuid",
-          "username": "johndoe",
-          "displayName": "John Doe"
-        }
-      ],
-      "labels": [
-        {
-          "id": "uuid",
-          "name": "Feature",
-          "color": "#61bd4f"
-        }
-      ],
-      "checklistsCount": 1,
-      "attachmentsCount": 2,
-      "commentsCount": 3,
-      "createdAt": "2024-01-01T00:00:00Z"
-    }
-  ]
+  "success": true,
+  "status": 200,
+  "data": {
+    "cards": [
+      {
+        "id": "uuid",
+        "title": "Implement user authentication",
+        "description": "Add JWT-based authentication",
+        "position": 1,
+        "dueDate": "2024-01-15T00:00:00Z",
+        "assignees": [
+          {
+            "userId": "uuid",
+            "username": "johndoe",
+            "displayName": "John Doe"
+          }
+        ],
+        "labels": [
+          {
+            "id": "uuid",
+            "name": "Feature",
+            "color": "#61bd4f"
+          }
+        ],
+        "checklistsCount": 1,
+        "attachmentsCount": 2,
+        "commentsCount": 3,
+        "createdAt": "2024-01-01T00:00:00Z"
+      }
+    ]
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -743,12 +1237,17 @@ POST /api/lists/:listId/cards
 **Response**: `201 Created`
 ```json
 {
-  "id": "uuid",
-  "title": "New Task",
-  "description": "Task description with **markdown**",
-  "position": 1,
-  "listId": "uuid",
-  "createdAt": "2024-01-01T00:00:00Z"
+  "success": true,
+  "status": 201,
+  "data": {
+    "id": "uuid",
+    "title": "New Task",
+    "description": "Task description with **markdown**",
+    "position": 1,
+    "listId": "uuid",
+    "createdAt": "2024-01-01T00:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -760,20 +1259,25 @@ GET /api/cards/:cardId
 **Response**: `200 OK`
 ```json
 {
-  "id": "uuid",
-  "title": "Implement user authentication",
-  "description": "Add JWT-based authentication system",
-  "position": 1,
-  "listId": "uuid",
-  "dueDate": "2024-01-15T00:00:00Z",
-  "assignees": [],
-  "labels": [],
-  "checklists": [],
-  "attachments": [],
-  "activity": [],
-  "watchers": [],
-  "createdAt": "2024-01-01T00:00:00Z",
-  "updatedAt": "2024-01-01T00:00:00Z"
+  "success": true,
+  "status": 200,
+  "data": {
+    "id": "uuid",
+    "title": "Implement user authentication",
+    "description": "Add JWT-based authentication system",
+    "position": 1,
+    "listId": "uuid",
+    "dueDate": "2024-01-15T00:00:00Z",
+    "assignees": [],
+    "labels": [],
+    "checklists": [],
+    "attachments": [],
+    "activity": [],
+    "watchers": [],
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-01-01T00:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -791,11 +1295,40 @@ PUT /api/cards/:cardId
 }
 ```
 
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "id": "uuid",
+    "title": "Updated title",
+    "description": "Updated description",
+    "position": 1,
+    "listId": "uuid",
+    "updatedAt": "2024-01-01T12:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 #### Delete Card
 ```
 DELETE /api/cards/:cardId
 ```
 **Business Rule**: BR-C-018 (Card Deletion)
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "Card deleted successfully"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
 
 #### Archive Card
 ```
@@ -803,9 +1336,33 @@ POST /api/cards/:cardId/archive
 ```
 **Business Rule**: BR-C-017 (Card Archiving)
 
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "Card archived successfully"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 #### Restore Archived Card
 ```
 POST /api/cards/:cardId/restore
+```
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "Card restored successfully"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
 ```
 
 ### Card Operations
@@ -824,6 +1381,21 @@ PUT /api/cards/:cardId/move
 }
 ```
 
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "id": "uuid",
+    "listId": "target_list_uuid",
+    "position": 2,
+    "movedAt": "2024-01-01T12:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 #### Reorder Card Within List
 ```
 PUT /api/cards/:cardId/position
@@ -837,6 +1409,20 @@ PUT /api/cards/:cardId/position
 }
 ```
 
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "id": "uuid",
+    "position": 3,
+    "updatedAt": "2024-01-01T12:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 #### Set Due Date
 ```
 PUT /api/cards/:cardId/due-date
@@ -847,6 +1433,20 @@ PUT /api/cards/:cardId/due-date
 ```json
 {
   "dueDate": "2024-01-15T23:59:59Z"
+}
+```
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "id": "uuid",
+    "dueDate": "2024-01-15T23:59:59Z",
+    "updatedAt": "2024-01-01T12:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -865,9 +1465,34 @@ POST /api/cards/:cardId/assign
 }
 ```
 
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "Member assigned to card successfully",
+    "assigneeId": "uuid"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 #### Unassign Member from Card
 ```
 DELETE /api/cards/:cardId/assign/:userId
+```
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "Member unassigned from card successfully"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
 ```
 
 #### Add Label to Card
@@ -883,9 +1508,34 @@ POST /api/cards/:cardId/labels
 }
 ```
 
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "Label added to card successfully",
+    "labelId": "uuid"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 #### Remove Label from Card
 ```
 DELETE /api/cards/:cardId/labels/:labelId
+```
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "Label removed from card successfully"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
 ```
 
 #### Get Board Labels
@@ -896,13 +1546,18 @@ GET /api/boards/:boardId/labels
 **Response**: `200 OK`
 ```json
 {
-  "labels": [
-    {
-      "id": "uuid",
-      "name": "Bug",
-      "color": "#eb5a46"
-    }
-  ]
+  "success": true,
+  "status": 200,
+  "data": {
+    "labels": [
+      {
+        "id": "uuid",
+        "name": "Bug",
+        "color": "#eb5a46"
+      }
+    ]
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -919,6 +1574,21 @@ POST /api/boards/:boardId/labels
 }
 ```
 
+**Response**: `201 Created`
+```json
+{
+  "success": true,
+  "status": 201,
+  "data": {
+    "id": "uuid",
+    "name": "New Label",
+    "color": "#61bd4f",
+    "createdAt": "2024-01-01T00:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 ### Card Attachments
 
 #### Get Card Attachments
@@ -929,20 +1599,25 @@ GET /api/cards/:cardId/attachments
 **Response**: `200 OK`
 ```json
 {
-  "attachments": [
-    {
-      "id": "uuid",
-      "name": "document.pdf",
-      "url": "secure_url",
-      "size": 1024000,
-      "type": "file",
-      "uploadedAt": "2024-01-01T00:00:00Z",
-      "uploadedBy": {
-        "userId": "uuid",
-        "username": "johndoe"
+  "success": true,
+  "status": 200,
+  "data": {
+    "attachments": [
+      {
+        "id": "uuid",
+        "name": "document.pdf",
+        "url": "secure_url",
+        "size": 1024000,
+        "type": "file",
+        "uploadedAt": "2024-01-01T00:00:00Z",
+        "uploadedBy": {
+          "userId": "uuid",
+          "username": "johndoe"
+        }
       }
-    }
-  ]
+    ]
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -955,9 +1630,38 @@ POST /api/cards/:cardId/attachments
 **Request**: Multipart form data
 - `file`: File to upload (max 25MB)
 
+**Response**: `201 Created`
+```json
+{
+  "success": true,
+  "status": 201,
+  "data": {
+    "id": "uuid",
+    "name": "document.pdf",
+    "url": "secure_url",
+    "size": 1024000,
+    "type": "file",
+    "uploadedAt": "2024-01-01T00:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 #### Delete Attachment
 ```
 DELETE /api/cards/:cardId/attachments/:attachmentId
+```
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "Attachment deleted successfully"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
 ```
 
 #### Add Link Attachment
@@ -974,6 +1678,22 @@ POST /api/cards/:cardId/links
 }
 ```
 
+**Response**: `201 Created`
+```json
+{
+  "success": true,
+  "status": 201,
+  "data": {
+    "id": "uuid",
+    "url": "https://example.com",
+    "title": "Example Website",
+    "type": "link",
+    "createdAt": "2024-01-01T00:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 ### Card Checklists
 
 #### Get Card Checklists
@@ -985,23 +1705,28 @@ GET /api/cards/:cardId/checklists
 **Response**: `200 OK`
 ```json
 {
-  "checklists": [
-    {
-      "id": "uuid",
-      "name": "Task Checklist",
-      "items": [
-        {
-          "id": "uuid",
-          "text": "Complete design mockups",
-          "completed": true,
-          "assignee": null,
-          "dueDate": null
-        }
-      ],
-      "completedItems": 1,
-      "totalItems": 3
-    }
-  ]
+  "success": true,
+  "status": 200,
+  "data": {
+    "checklists": [
+      {
+        "id": "uuid",
+        "name": "Task Checklist",
+        "items": [
+          {
+            "id": "uuid",
+            "text": "Complete design mockups",
+            "completed": true,
+            "assignee": null,
+            "dueDate": null
+          }
+        ],
+        "completedItems": 1,
+        "totalItems": 3
+      }
+    ]
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -1017,6 +1742,23 @@ POST /api/cards/:cardId/checklists
 }
 ```
 
+**Response**: `201 Created`
+```json
+{
+  "success": true,
+  "status": 201,
+  "data": {
+    "id": "uuid",
+    "name": "Development Tasks",
+    "items": [],
+    "completedItems": 0,
+    "totalItems": 0,
+    "createdAt": "2024-01-01T00:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 #### Update Checklist
 ```
 PUT /api/checklists/:checklistId
@@ -1029,9 +1771,35 @@ PUT /api/checklists/:checklistId
 }
 ```
 
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "id": "uuid",
+    "name": "Updated Checklist Name",
+    "updatedAt": "2024-01-01T12:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 #### Delete Checklist
 ```
 DELETE /api/checklists/:checklistId
+```
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "Checklist deleted successfully"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
 ```
 
 #### Add Checklist Item
@@ -1049,6 +1817,23 @@ POST /api/checklists/:checklistId/items
 }
 ```
 
+**Response**: `201 Created`
+```json
+{
+  "success": true,
+  "status": 201,
+  "data": {
+    "id": "uuid",
+    "text": "New checklist item",
+    "completed": false,
+    "assigneeId": "uuid",
+    "dueDate": "2024-01-10T00:00:00Z",
+    "createdAt": "2024-01-01T00:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 #### Update Checklist Item
 ```
 PUT /api/checklist-items/:itemId
@@ -1062,9 +1847,36 @@ PUT /api/checklist-items/:itemId
 }
 ```
 
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "id": "uuid",
+    "text": "Updated item text",
+    "completed": true,
+    "updatedAt": "2024-01-01T12:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 #### Delete Checklist Item
 ```
 DELETE /api/checklist-items/:itemId
+```
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "Checklist item deleted successfully"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
 ```
 
 ### Card Comments
@@ -1082,25 +1894,30 @@ GET /api/cards/:cardId/comments
 **Response**: `200 OK`
 ```json
 {
-  "comments": [
-    {
-      "id": "uuid",
-      "text": "This looks great! @johndoe please review.",
-      "author": {
-        "userId": "uuid",
-        "username": "janedoe",
-        "displayName": "Jane Doe"
-      },
-      "createdAt": "2024-01-01T00:00:00Z",
-      "updatedAt": "2024-01-01T00:00:00Z",
-      "mentions": [
-        {
+  "success": true,
+  "status": 200,
+  "data": {
+    "comments": [
+      {
+        "id": "uuid",
+        "text": "This looks great! @johndoe please review.",
+        "author": {
           "userId": "uuid",
-          "username": "johndoe"
-        }
-      ]
-    }
-  ]
+          "username": "janedoe",
+          "displayName": "Jane Doe"
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-01-01T00:00:00Z",
+        "mentions": [
+          {
+            "userId": "uuid",
+            "username": "johndoe"
+          }
+        ]
+      }
+    ]
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -1113,6 +1930,26 @@ POST /api/cards/:cardId/comments
 ```json
 {
   "text": "This is a comment with @mention"
+}
+```
+
+**Response**: `201 Created`
+```json
+{
+  "success": true,
+  "status": 201,
+  "data": {
+    "id": "uuid",
+    "text": "This is a comment with @mention",
+    "author": {
+      "userId": "uuid",
+      "username": "janedoe",
+      "displayName": "Jane Doe"
+    },
+    "createdAt": "2024-01-01T00:00:00Z",
+    "mentions": []
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -1129,9 +1966,35 @@ PUT /api/comments/:commentId
 }
 ```
 
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "id": "uuid",
+    "text": "Updated comment text",
+    "updatedAt": "2024-01-01T12:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 #### Delete Comment
 ```
 DELETE /api/comments/:commentId
+```
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "Comment deleted successfully"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
 ```
 
 ### Card Watchers
@@ -1145,13 +2008,18 @@ GET /api/cards/:cardId/watchers
 **Response**: `200 OK`
 ```json
 {
-  "watchers": [
-    {
-      "userId": "uuid",
-      "username": "johndoe",
-      "displayName": "John Doe"
-    }
-  ]
+  "success": true,
+  "status": 200,
+  "data": {
+    "watchers": [
+      {
+        "userId": "uuid",
+        "username": "johndoe",
+        "displayName": "John Doe"
+      }
+    ]
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -1160,9 +2028,33 @@ GET /api/cards/:cardId/watchers
 POST /api/cards/:cardId/watch
 ```
 
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "Successfully watching card"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 #### Unwatch Card
 ```
 DELETE /api/cards/:cardId/watch
+```
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "Successfully unwatching card"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
 ```
 
 ---
@@ -1185,9 +2077,14 @@ GET /api/search/cards
 **Response**: `200 OK`
 ```json
 {
-  "cards": [],
-  "totalResults": 25,
-  "query": "authentication"
+  "success": true,
+  "status": 200,
+  "data": {
+    "cards": [],
+    "totalResults": 25,
+    "query": "authentication"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -1219,9 +2116,49 @@ POST /api/search/save-filter
 }
 ```
 
+**Response**: `201 Created`
+```json
+{
+  "success": true,
+  "status": 201,
+  "data": {
+    "id": "uuid",
+    "name": "My Assigned Tasks",
+    "criteria": {
+      "assignee": "me",
+      "labels": ["urgent"]
+    },
+    "createdAt": "2024-01-01T00:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 ### Get Saved Filters
 ```
 GET /api/search/saved-filters
+```
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "filters": [
+      {
+        "id": "uuid",
+        "name": "My Assigned Tasks",
+        "criteria": {
+          "assignee": "me",
+          "labels": ["urgent"]
+        },
+        "createdAt": "2024-01-01T00:00:00Z"
+      }
+    ]
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
 ```
 
 ---
@@ -1241,26 +2178,43 @@ GET /api/notifications
 **Response**: `200 OK`
 ```json
 {
-  "notifications": [
-    {
-      "id": "uuid",
-      "type": "card_assigned",
-      "title": "You were assigned to a card",
-      "message": "John assigned you to 'Implement authentication'",
-      "read": false,
-      "createdAt": "2024-01-01T00:00:00Z",
-      "data": {
-        "cardId": "uuid",
-        "boardId": "uuid"
+  "success": true,
+  "status": 200,
+  "data": {
+    "notifications": [
+      {
+        "id": "uuid",
+        "type": "card_assigned",
+        "title": "You were assigned to a card",
+        "message": "John assigned you to 'Implement authentication'",
+        "read": false,
+        "createdAt": "2024-01-01T00:00:00Z",
+        "data": {
+          "cardId": "uuid",
+          "boardId": "uuid"
+        }
       }
-    }
-  ]
+    ]
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
 ### Mark Notification as Read
 ```
 PUT /api/notifications/:notificationId/read
+```
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "Notification marked as read"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
 ```
 
 ### Update Notification Settings
@@ -1283,9 +2237,53 @@ PUT /api/notifications/settings
 }
 ```
 
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "frequency": "immediate",
+    "types": {
+      "assignments": true,
+      "mentions": true,
+      "dueDates": true,
+      "comments": false
+    },
+    "email": true,
+    "updatedAt": "2024-01-01T12:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 ### Get Notification Digest
 ```
 GET /api/notifications/digest
+```
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "digest": {
+      "unreadCount": 5,
+      "recentActivity": [
+        {
+          "type": "card_assigned",
+          "count": 3
+        },
+        {
+          "type": "mention",
+          "count": 2
+        }
+      ]
+    }
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
 ```
 
 ---
@@ -1297,6 +2295,26 @@ GET /api/notifications/digest
 GET /api/workspaces
 ```
 **Business Rule**: BR-U-010 (Workspace Creation)
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "workspaces": [
+      {
+        "id": "uuid",
+        "name": "My Company Workspace",
+        "description": "Workspace for company projects",
+        "role": "owner",
+        "createdAt": "2024-01-01T00:00:00Z"
+      }
+    ]
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
 
 ### Create Workspace
 ```
@@ -1311,9 +2329,43 @@ POST /api/workspaces
 }
 ```
 
+**Response**: `201 Created`
+```json
+{
+  "success": true,
+  "status": 201,
+  "data": {
+    "id": "uuid",
+    "name": "My Company Workspace",
+    "description": "Workspace for company projects",
+    "role": "owner",
+    "createdAt": "2024-01-01T00:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 ### Get Workspace
 ```
 GET /api/workspaces/:workspaceId
+```
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "id": "uuid",
+    "name": "My Company Workspace",
+    "description": "Workspace for company projects",
+    "role": "owner",
+    "boardsCount": 15,
+    "membersCount": 8,
+    "createdAt": "2024-01-01T00:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
 ```
 
 ### Update Workspace
@@ -1321,9 +2373,36 @@ GET /api/workspaces/:workspaceId
 PUT /api/workspaces/:workspaceId
 ```
 
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "id": "uuid",
+    "name": "Updated Workspace Name",
+    "description": "Updated description",
+    "updatedAt": "2024-01-01T12:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 ### Delete Workspace
 ```
 DELETE /api/workspaces/:workspaceId
+```
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "Workspace deleted successfully"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
 ```
 
 ### Invite Workspace Member
@@ -1337,6 +2416,19 @@ POST /api/workspaces/:workspaceId/members
 {
   "email": "member@example.com",
   "role": "member"
+}
+```
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "message": "Invitation sent successfully",
+    "invitationId": "uuid"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -1354,14 +2446,81 @@ GET /api/admin/users
 - `limit`: Number of users
 - `search`: Search by email/username
 
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "users": [
+      {
+        "id": "uuid",
+        "email": "user@example.com",
+        "username": "johndoe",
+        "displayName": "John Doe",
+        "status": "active",
+        "createdAt": "2024-01-01T00:00:00Z",
+        "lastLoginAt": "2024-01-01T12:00:00Z"
+      }
+    ],
+    "totalCount": 1250
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 ### List All Boards (System Admin Only)
 ```
 GET /api/admin/boards
 ```
 
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "boards": [
+      {
+        "id": "uuid",
+        "name": "Project Board",
+        "ownerId": "uuid",
+        "visibility": "private",
+        "membersCount": 5,
+        "createdAt": "2024-01-01T00:00:00Z"
+      }
+    ],
+    "totalCount": 5500
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
+```
+
 ### System Activity Log (System Admin Only)
 ```
 GET /api/admin/activity
+```
+
+**Response**: `200 OK`
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "activities": [
+      {
+        "id": "uuid",
+        "type": "user_registered",
+        "userId": "uuid",
+        "description": "New user registered",
+        "timestamp": "2024-01-01T00:00:00Z",
+        "metadata": {}
+      }
+    ],
+    "totalCount": 10000
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
+}
 ```
 
 ### System Statistics (System Admin Only)
@@ -1372,19 +2531,24 @@ GET /api/admin/stats
 **Response**: `200 OK`
 ```json
 {
-  "users": {
-    "total": 1250,
-    "active": 1100,
-    "premium": 150
+  "success": true,
+  "status": 200,
+  "data": {
+    "users": {
+      "total": 1250,
+      "active": 1100,
+      "premium": 150
+    },
+    "boards": {
+      "total": 5500,
+      "active": 4800
+    },
+    "cards": {
+      "total": 45000,
+      "completed": 15000
+    }
   },
-  "boards": {
-    "total": 5500,
-    "active": 4800
-  },
-  "cards": {
-    "total": 45000,
-    "completed": 15000
-  }
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -1400,9 +2564,14 @@ GET /api/health
 **Response**: `200 OK`
 ```json
 {
-  "status": "healthy",
-  "timestamp": "2024-01-01T00:00:00Z",
-  "version": "1.0.0"
+  "success": true,
+  "status": 200,
+  "data": {
+    "status": "healthy",
+    "timestamp": "2024-01-01T00:00:00Z",
+    "version": "1.0.0"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -1414,10 +2583,15 @@ GET /api/status
 **Response**: `200 OK`
 ```json
 {
-  "api": "operational",
-  "database": "operational",
-  "storage": "operational",
-  "notifications": "operational"
+  "success": true,
+  "status": 200,
+  "data": {
+    "api": "operational",
+    "database": "operational",
+    "storage": "operational",
+    "notifications": "operational"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 
@@ -1430,9 +2604,14 @@ GET /api/rate-limit
 **Response**: `200 OK`
 ```json
 {
-  "limit": 1000,
-  "remaining": 856,
-  "resetTime": "2024-01-01T01:00:00Z"
+  "success": true,
+  "status": 200,
+  "data": {
+    "limit": 1000,
+    "remaining": 856,
+    "resetTime": "2024-01-01T01:00:00Z"
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
 

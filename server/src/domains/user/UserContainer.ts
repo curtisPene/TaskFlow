@@ -8,11 +8,13 @@ import { UserRouter } from "./infrastructure/UserRouter";
 
 import { CryptoIDGenerator } from "../../lib/utils/CryptoIDGenerator";
 import { IDGenerator } from "../../lib/domain/IDGenerator";
+import { LoginUserInputPort } from "./applicaiton/LoginUserInputPort";
 
 export class UserContainer {
   private _idGenerator: IDGenerator;
   private _userRepository: UserRepository;
   private _registerUserService: RegisterUser;
+  private _loginUserService: LoginUserInputPort;
   private _userExpressAdapter: UserExpressAdapter;
   private _userRouter: UserRouter;
 
@@ -23,8 +25,10 @@ export class UserContainer {
       this._userRepository,
       this._idGenerator
     );
+    this._loginUserService = new LoginUserInputPort(this._userRepository);
     this._userExpressAdapter = new UserExpressAdapter(
-      this._registerUserService
+      this._registerUserService,
+      this._loginUserService
     );
     this._userRouter = new UserRouter(this._userExpressAdapter);
   }

@@ -1,33 +1,22 @@
-export class Result<T, E = string> {
-  private constructor(
-    public readonly isOk: boolean,
-    public readonly value?: T,
-    public readonly error?: E
-  ) {}
+export type Success<T> = {
+  readonly success: true;
+  readonly status: number;
+  readonly data: T;
+};
 
-  static ok<T>(value: T): Result<T, never> {
-    return new Result(true, value);
-  }
+export type Failure<E> = {
+  readonly success: false;
+  status: number;
+  readonly error: E;
+};
 
-  static fail<T>(error: string): Result<T, string> {
-    return new Result<T, string>(false, undefined, error);
-  }
+export type Result<T, E = string> = Success<T> | Failure<E>;
 
-  isSuccess(): boolean {
-    return this.isOk;
-  }
-
-  getValue(): T {
-    if (!this.value) {
-      throw new Error("Result value is undefined");
-    }
-    return this.value;
-  }
-
-  getError(): E {
-    if (!this.error) {
-      throw new Error("Result error is undefined");
-    }
-    return this.error;
-  }
-}
+export const Result = {
+  success<T>(data: T, status = 200): Success<T> {
+    return { success: true, status, data };
+  },
+  fail<E>(error: E, status = 400): Failure<E> {
+    return { success: false, status, error };
+  },
+};

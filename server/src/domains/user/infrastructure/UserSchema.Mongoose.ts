@@ -10,6 +10,10 @@ const UserSchema = new Schema(
       type: String,
       required: true,
     },
+    password: {
+      type: String,
+      required: true,
+    },
     username: {
       type: String,
       required: true,
@@ -40,7 +44,6 @@ const UserSchema = new Schema(
     lastLoginAt: {
       type: Date,
       required: true,
-      default: undefined,
     },
   },
   { timestamps: true }

@@ -13,6 +13,11 @@ export class UserRouter {
       "/register",
       this.userAdapter.postNewUser.bind(this.userAdapter)
     );
+
+    this.router.post(
+      "/login",
+      this.userAdapter.postUserLogin.bind(this.userAdapter)
+    );
   }
 
   public getRouter(): Router {
