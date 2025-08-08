@@ -49,7 +49,6 @@ TaskFlow/
 │   │   │       └── infrastructure/ # Adapters and external services
 │   │   └── lib/              # Shared utilities and types
 │   └── tests/                # Test files
-└── CLAUDE.md                 # Development guidelines and context
 ```
 
 ## Getting Started
@@ -127,7 +126,6 @@ TaskFlow follows **Hexagonal Architecture** (Davi Vieira approach) with clean se
 - [Data Flow Conventions](./docs/data-flow-conventions.md) - Architecture patterns and data flow guidelines  
 - [Domain Models](./docs/domain-models.md) - Core domain entity definitions and relationships
 - [Business Rules](./docs/business-rules/) - Comprehensive rules for boards, lists, cards, users, and workflows
-- [CLAUDE.md](./CLAUDE.md) - Development guidelines and project context for Claude Code
 
 ## Contributing
 
