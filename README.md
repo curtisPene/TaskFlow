@@ -25,9 +25,18 @@ A Trello-like task management application built with modern web technologies and
 - **JWT** (jsonwebtoken) for authentication tokens
 - **dotenv** for environment configuration
 
-### Frontend (Coming Soon)
-- **React** with TypeScript
-- Modern UI components and responsive design
+### Frontend
+- **React 19** with TypeScript
+- **Vite** for fast development and building
+- **React Router** for client-side routing
+- **Tailwind CSS v4** with OKLCH color system
+- **shadcn/ui** component library with Radix UI
+- **Lucide React** for icons
+- **Redux Toolkit** for state management
+- **TanStack Query** for server state management
+- **Axios** for HTTP client
+- **Zod** for client-side validation
+- **Bulletproof React** architecture
 
 ## Project Structure
 
@@ -49,6 +58,16 @@ TaskFlow/
 │   │   │       └── infrastructure/ # Adapters and external services
 │   │   └── lib/              # Shared utilities and types
 │   └── tests/                # Test files
+└── client/                   # React frontend
+    ├── src/
+    │   ├── app/              # App-level configuration & providers
+    │   ├── components/       # Shared UI components & layouts
+    │   ├── features/         # Feature-based modules
+    │   │   └── auth/         # Authentication features
+    │   ├── assets/           # Static assets and images
+    │   ├── lib/              # Library configurations and wrappers
+    │   └── hooks/            # Shared React hooks
+    └── public/               # Static public assets
 ```
 
 ## Getting Started
@@ -99,9 +118,40 @@ TaskFlow/
 
 The server will start on `http://localhost:8080` with a health check endpoint at `/health-check`.
 
+### Frontend Setup
+
+1. Navigate to the client directory:
+   ```bash
+   cd client
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+4. Build for production:
+   ```bash
+   npm run build
+   ```
+
+5. Run linting:
+   ```bash
+   npm run lint
+   ```
+
+The client will start on `http://localhost:5173` with hot reload enabled.
+
 ## Architecture
 
-TaskFlow follows **Hexagonal Architecture** (Davi Vieira approach) with clean separation of concerns:
+TaskFlow follows **Hexagonal Architecture** for the backend and **Bulletproof React** architecture for the frontend with clean separation of concerns:
+
+### Backend Architecture
 
 ### Layers
 - **Domain Layer**: Business entities, value objects, and business rules (pure TypeScript)
@@ -114,11 +164,28 @@ TaskFlow follows **Hexagonal Architecture** (Davi Vieira approach) with clean se
 - **Value Objects**: Rich domain objects with built-in validation
 - **Use Case Interfaces**: Domain-defined contracts implemented by application services
 
+### Frontend Architecture
+
+The client application follows **Bulletproof React** patterns:
+
+- **Feature-Based Organization**: Self-contained feature modules with their own components, hooks, and API calls
+- **Shared Components**: Reusable UI components built with shadcn/ui and Radix primitives
+- **Layered Architecture**: Clear separation between presentation, business logic, and data access
+- **Type Safety**: Full TypeScript coverage with Zod validation
+
 ### Current Implementation
+
+**Backend:**
 - **User Domain**: Complete user registration and login with JWT authentication
 - **JWT Authentication**: Access and refresh token support with configurable expiration times
 - **Server Orchestration**: Clean startup/shutdown lifecycle management
 - **Database Connection**: MongoDB with Mongoose, connection pooling, and error handling
+
+**Frontend:**
+- **Public Layout**: Landing page, login, and registration forms
+- **Authentication UI**: Complete login/signup flow with form validation
+- **Component Library**: shadcn/ui components with Tailwind CSS styling
+- **Routing**: React Router with layout-based routing structure
 
 ## Documentation
 
