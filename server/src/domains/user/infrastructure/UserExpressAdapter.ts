@@ -5,7 +5,7 @@ import {
   FailureResponse,
   SuccessResponse,
 } from "../../../lib/utils/ApiResponse";
-import id from "zod/v4/locales/id.js";
+
 export class UserExpressAdapter {
   constructor(
     private registerUser: RegisterUser,
@@ -72,7 +72,6 @@ export class UserExpressAdapter {
       status: result.status,
       data: {
         accessToken: result.data.accessToken,
-        refreshToken: result.data.refreshToken,
         user: {
           id: result.data.id,
           email: result.data.email,
@@ -83,6 +82,14 @@ export class UserExpressAdapter {
       timestamp: new Date().toISOString(),
     };
 
-    return res.status(result.status).json(success);
+    return res
+      .status(result.status)
+      .cookie("flowtask_refresh_token", result.data.refreshToken, {
+        httpOnly: true,
+        sameSite: "strict",
+        path: "/api/auth/refresh",
+        maxAge: 10000 * 60 * 60 * 24 * 7,
+      })
+      .json(success);
   }
 }

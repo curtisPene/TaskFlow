@@ -22,10 +22,12 @@ export const LandingPage = () => {
           alt="An illustration of a girl with a laptop"
         />
         <div className="flex flex-col gap-1 w-full items-center">
-          <Button className="w-full">Sign up - it's free!</Button>
+          <Button className="w-full">
+            <Link to="/signup">Sign up - it's free!</Link>
+          </Button>
           <p>
             Already have an account?{" "}
-            <Link className="text-primary" to="#">
+            <Link className="text-primary" to="/login">
               log in
             </Link>
           </p>

@@ -1,11 +1,15 @@
 import { Provider } from "react-redux";
 import { AppRouter } from "./app/router";
 import { store } from "./app/provider";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 function App() {
+  const queryClient = new QueryClient();
   return (
-    <Provider store={store}>
-      <AppRouter />;
-    </Provider>
+    <QueryClientProvider client={queryClient}>
+      <Provider store={store}>
+        <AppRouter />;
+      </Provider>
+    </QueryClientProvider>
   );
 }
 

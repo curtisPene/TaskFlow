@@ -10,13 +10,33 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link } from "react-router";
+import type { LoginRequest } from "@/lib/auth";
+
+type loginFormProps = {
+  className?: string;
+  onSubmit: (data: LoginRequest) => void;
+  isLoading: boolean;
+  error: Error | null;
+};
 
 export function LoginForm({
   className,
-  ...props
-}: React.ComponentProps<"div">) {
+  onSubmit,
+  isLoading,
+  error,
+}: loginFormProps) {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const data: LoginRequest = {
+      email: formData.get("email") as string,
+      password: formData.get("password") as string,
+    };
+    onSubmit(data);
+  };
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={cn("flex flex-col gap-6", className)}>
+      <p>{error?.message}</p>
       <Card className="border-none shadow-md">
         <CardHeader>
           <CardTitle>Login to your account</CardTitle>
@@ -25,12 +45,13 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="m@example.com"
                   required
@@ -46,11 +67,11 @@ export function LoginForm({
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input id="password" name="password" type="password" required />
               </div>
               <div className="flex flex-col gap-3">
                 <Button type="submit" className="w-full">
-                  Login
+                  {isLoading ? "Loading..." : "Login"}
                 </Button>
               </div>
             </div>

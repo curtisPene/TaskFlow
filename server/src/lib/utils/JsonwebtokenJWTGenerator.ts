@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
+import { JwtGenerator } from "../infrastructure/JWTGenerator";
 
-export class JsonwebtokenJWTGenerator {
+export class JsonwebtokenJWTGenerator implements JwtGenerator {
   constructor() {}
 
   async generateAccessToken(payload: object | string): Promise<string> {
@@ -37,7 +38,11 @@ export class JsonwebtokenJWTGenerator {
     });
   }
 
-  async generateToken(payload: object | string): Promise<string> {
-    return this.generateAccessToken(payload);
+  async verifyAccessToken(access: string): Promise<string> {
+    throw new Error("Method not implemented.");
+  }
+
+  async verifyRefreshToken(token: string): Promise<string> {
+    throw new Error("Method not implemented.");
   }
 }
