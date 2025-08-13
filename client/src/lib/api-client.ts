@@ -5,6 +5,12 @@ const authRequestInterceptor = (config: InternalAxiosRequestConfig) => {
     config.headers.Accept = "application/json";
   }
 
+  const accessToken = localStorage.getItem("accessToken");
+
+  if (accessToken && config.headers) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
+  }
+
   config.withCredentials = true;
   return config;
 };
